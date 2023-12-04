@@ -1,10 +1,11 @@
 import { readdirSync, lstatSync } from "node:fs";
 import { join } from "node:path";
 
-export function getDocs() {
-  const docFolder = "/usr/share/doc";
-  return readdirSync(docFolder)
-    .map((d) => join(docFolder, d))
+export const root = "/usr/share/doc";
+
+export function getDocs(folder: string) {
+  return readdirSync(folder)
+    .map((d) => join(folder, d))
     .filter((d) => {
       const stat = lstatSync(d);
       if (stat.isDirectory()) {

@@ -1,15 +1,15 @@
 <script>
   export let data;
-  import { readFileSync, readdirSync, lstatSync } from "node:fs";
-  import { join } from "node:path";
-  const file = join("/", data.path);
-  const stat = lstatSync(file);
+  import DirView from "$lib/DirView.svelte";
+  import FileView from "$lib/FileView.svelte";
+
+  import { lstatSync } from "node:fs";
+  const path = data.path;
+  const stat = lstatSync(path);
 </script>
 
-{#if stat.isFile(file)} {@html readFileSync(file)} {:else}
-<div>
-  <a href="/">Back</a>
-</div>
-
-<div>{readdirSync(file)}</div>
+{#if stat.isFile()}
+  <FileView {path} />
+{:else}
+  <DirView {path} />
 {/if}
