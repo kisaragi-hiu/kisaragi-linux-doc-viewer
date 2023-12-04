@@ -48,9 +48,11 @@ Bun.serve({
       const fullpath = join(root, path);
       const stat = lstatSync(fullpath);
       if (stat.isDirectory()) {
+        // Path trailing slash normalization
         if (path.at(-1) !== "/") {
           return redirect(path + "/");
         }
+        // Redirect to index.html
         if (existsSync(join(fullpath, "index.html"))) {
           return redirect(join(path, "index.html"));
         }

@@ -1,19 +1,33 @@
 import { readdirSync, lstatSync } from "node:fs";
-import { join } from "node:path";
+import { join, basename } from "node:path";
 
 export const root = "/usr/share/doc/";
 
 export function getDocs(folder: string) {
   return readdirSync(folder)
-    .filter((d) => {
+    .map((d) => {
       const full = join(folder, d);
       const stat = lstatSync(full);
-      if (stat.isDirectory()) {
-        return readdirSync(full).length > 0;
+      // Leave files as-is
+      if (stat.isFile()) {
+        return d;
+      }
+      const contents = readdirSync(full);
+      // For documentations that only have one child, abbreviate
+      // intermediate step(s) like GitHub
+      if (contents.length === 1) {
+        const child = contents[0];
+        console.log(child);
+        return join(d, child);
+      } else if (contents.length === 0) {
+        // We can only use a string here to not trip up typescript
+        return "";
+        // For other paths, return the basename
       } else {
-        return true;
+        return d;
       }
     })
+    .filter((d) => d.length > 0)
     .sort((a, b) => {
       return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
     });
