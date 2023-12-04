@@ -1,16 +1,36 @@
-import { readdir } from "node:fs/promises";
 import { render } from "preact-render-to-string";
+import type { VNode } from "preact";
+import { lstatSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
-async function ListDocs() {
-  const docs = (await readdir("/usr/share/doc")).sort((a, b) => {
-    return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
-  });
-  return (
-    <ul>
-      {docs.map((d) => (
-        <li>{d}</li>
-      ))}
-    </ul>
+import { DirView, FileView } from "./components";
+import { root } from "./lib";
+
+function Page(vnode: VNode<{}>, styled = true) {
+  return new Response(
+    "<!DOCTYPE html>" +
+      render(
+        <>
+          <head>
+            <meta charset="utf-8" />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1"
+            />
+            {styled && (
+              <style>
+                {readFileSync(
+                  "./node_modules/sakura.css/css/sakura.css",
+                ).toString()}
+              </style>
+            )}
+          </head>
+          <body>{vnode}</body>
+        </>,
+      ),
+    {
+      headers: { "Content-Type": "text/html" },
+    },
   );
 }
 
@@ -19,11 +39,22 @@ Bun.serve({
   port: 4003,
   async fetch(req) {
     const url = new URL(req.url);
-    if (url.pathname === "/") {
-      return new Response(render(await ListDocs()), {
-        headers: { "Content-Type": "text/html" },
-      });
+    const path = url.pathname;
+    if (path === "/") {
+      return Page(DirView({ path: "/" }));
+    } else if (path === root) {
+      return Response.redirect("/", 307);
+    } else {
+      const stat = lstatSync(join(root, path));
+      if (stat.isFile()) {
+        return Page(FileView({ path }), false);
+      } else {
+        if (path.at(-1) === "/") {
+          return Page(DirView({ path }));
+        } else {
+          return Response.redirect(path + "/", 307);
+        }
+      }
     }
-    return new Response(url.pathname);
   },
 });
