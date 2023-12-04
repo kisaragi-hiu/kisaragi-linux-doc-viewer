@@ -17,3 +17,8 @@ There should be a list of all documentations, and some way to open a navigation 
 <hr>
 
 This is probably going to be a small server.
+
+Thinking of routes:
+
+- `/`: root listing of documentations
+- `/<docname>`: the page for the documentation

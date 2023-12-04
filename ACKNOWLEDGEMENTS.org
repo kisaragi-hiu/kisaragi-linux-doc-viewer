@@ -1,0 +1,29 @@
+* Markserv
+Serving Markdown as HTML
+(also `readme.js` being rendered by GitHub in the interface is funny)
+
+* Bun: Stream a file as an HTTP Response with Bun
+https://bun.sh/guides/http/stream-file
+
+Serving a file directly:
+
+#+begin_src js
+// static file server
+Bun.serve({
+  async fetch(req) {
+    // Getting the URL from the request
+    const url = new URL(req.url)
+    // Getting the target file name from the URL
+    const path = url.pathname;
+    // A Bun.file can be made into a Response directly and Bun knows
+    // what to do
+    return new Response(Bun.file(path));
+  },
+});
+#+end_src
+
+If we want to modify it (say to add a visual header) it might be more complicated.
+
+** Why Bun
+
+I'd like to not have to worry about ESM / CJS, thanks. Also Bun.serve's nice.
