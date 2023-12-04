@@ -16,6 +16,11 @@ export function Listing({ paths }: { paths: string[] }) {
 
 export function DirView({ path }: { path: string }) {
   const fullpath = join(root, path);
+  const paths = getDocs(fullpath);
+  const fileShown =
+    paths.length === 1
+      ? paths[0]
+      : paths.find((path) => path.match(/^readme(\.|$)/i));
   return (
     <>
       {path !== "/" && (
@@ -23,7 +28,8 @@ export function DirView({ path }: { path: string }) {
           <a href="../">Up</a>
         </div>
       )}
-      <Listing paths={getDocs(fullpath)} />
+      <Listing paths={paths} />
+      {fileShown && <FileView path={join(path, fileShown)} />}
     </>
   );
 }

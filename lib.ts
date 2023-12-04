@@ -18,3 +18,7 @@ export function getDocs(folder: string) {
       return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
     });
 }
+
+export function redirect(url: string | URL) {
+  return Response.redirect(url, 307);
+}

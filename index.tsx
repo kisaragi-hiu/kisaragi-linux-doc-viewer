@@ -1,10 +1,10 @@
 import { render } from "preact-render-to-string";
 import type { VNode } from "preact";
-import { lstatSync, readFileSync } from "node:fs";
+import { lstatSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 import { DirView, FileView } from "./components";
-import { root } from "./lib";
+import { root, redirect } from "./lib";
 
 function Page(vnode: VNode<{}>, styled = true) {
   return new Response(
@@ -45,15 +45,27 @@ Bun.serve({
     } else if (path === root) {
       return Response.redirect("/", 307);
     } else {
-      const stat = lstatSync(join(root, path));
-      if (stat.isFile()) {
-        return Page(FileView({ path }), false);
-      } else {
-        if (path.at(-1) === "/") {
-          return Page(DirView({ path }));
-        } else {
-          return Response.redirect(path + "/", 307);
+      const fullpath = join(root, path);
+      const stat = lstatSync(fullpath);
+      if (stat.isDirectory()) {
+        if (path.at(-1) !== "/") {
+          return redirect(path + "/");
         }
+        if (existsSync(join(fullpath, "index.html"))) {
+          return redirect(join(path, "index.html"));
+        }
+        return Page(DirView({ path }));
+      } else {
+        const file = Bun.file(fullpath);
+        if (
+          ["text/plain", "text/markdown", "application/octet-stream"].includes(
+            file.type,
+          )
+        ) {
+          return Page(FileView({ path }), false);
+        }
+        // console.log(`${fullpath} is ${file.type}`);
+        return new Response(Bun.file(fullpath));
       }
     }
   },
