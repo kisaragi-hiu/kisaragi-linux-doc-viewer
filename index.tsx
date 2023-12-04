@@ -64,10 +64,19 @@ Bun.serve({
             file.type,
           )
         ) {
-          return Page(FileView({ path }), false);
+          return Page(
+            <>
+              {path !== "/" && (
+                <div>
+                  <a href="./">Up</a>
+                </div>
+              )}
+              <FileView path={path} filetype={file.type} />
+            </>,
+          );
         }
         // console.log(`${fullpath} is ${file.type}`);
-        return new Response(Bun.file(fullpath));
+        return new Response(file);
       }
     }
   },

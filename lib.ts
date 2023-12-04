@@ -17,7 +17,6 @@ export function getDocs(folder: string) {
       // intermediate step(s) like GitHub
       if (contents.length === 1) {
         const child = contents[0];
-        console.log(child);
         return join(d, child);
       } else if (contents.length === 0) {
         // We can only use a string here to not trip up typescript

@@ -1,6 +1,7 @@
 import { getDocs, root } from "./lib";
-import { join } from "node:path";
+import { join, basename } from "node:path";
 import { readFileSync, lstatSync } from "node:fs";
+import { marked } from "marked";
 
 export function Listing({ paths }: { paths: string[] }) {
   return (
@@ -34,13 +35,23 @@ export function DirView({ path }: { path: string }) {
   );
 }
 
-export function FileView({ path }: { path: string }) {
+export function FileView({
+  path,
+}: {
+  path: string,
+}) {
   const fullpath = join(root, path);
-  return (
-    <div
-      dangerouslySetInnerHTML={{
-        __html: readFileSync(fullpath).toString(),
-      }}
-    />
-  );
+  const filetype = Bun.file(fullpath).type
+  const fileStr = readFileSync(fullpath).toString();
+  if (filetype === "text/markdown") {
+    return (
+      <div
+        dangerouslySetInnerHTML={{
+          __html: marked.parse(fileStr, { async: false }) as string,
+        }}
+      />
+    );
+  } else {
+    return <><h5>{basename(path)}</h5><pre>{fileStr}</pre></>;
+  }
 }
