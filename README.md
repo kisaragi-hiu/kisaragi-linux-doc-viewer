@@ -11,6 +11,7 @@ Here's the ones I'm seeing:
 - Some docs are in HTML, complete with an `index.html` where you can start navigating from
 - in zsh/ there is a PDF and an HTML output.
 - Some folders are empty. They should not be shown.
+- There's also plain files in there
 
 There should be a list of all documentations, and some way to open a navigation page for a particular documentation.
 

@@ -1,27 +1,14 @@
 {
+  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
-    "types": ["bun-types"],
-
-    "lib": ["ESNext"],
-    "module": "esnext",
-    "target": "esnext",
-
-    "moduleResolution": "bundler",
-    "noEmit": true,
-    "allowImportingTsExtensions": true,
-    "moduleDetection": "force",
-
-    "jsx": "react-jsx",
-    "jsxImportSource": "preact",
     "allowJs": true,
-
-    "strict": true,
+    "checkJs": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
-    "composite": true,
-    "downlevelIteration": true,
-    "allowSyntheticDefaultImports": true,
-
-    "noImplicitAny": false
+    "sourceMap": true,
+    "strict": true,
+    "moduleResolution": "bundler"
   }
 }

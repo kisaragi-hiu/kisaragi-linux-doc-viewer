@@ -27,3 +27,8 @@ If we want to modify it (say to add a visual header) it might be more complicate
 ** Why Bun
 
 I'd like to not have to worry about ESM / CJS, thanks. Also Bun.serve's nice.
+
+* Sakura.css
+https://github.com/oxalorg/sakura
+
+I use it as less ugly defaults.
