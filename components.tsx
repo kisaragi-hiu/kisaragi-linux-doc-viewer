@@ -1,4 +1,4 @@
-import { getDocs, root } from "./lib";
+import { getDocs, root, header } from "./lib";
 import { join, basename } from "node:path";
 import { readFileSync, lstatSync } from "node:fs";
 import { marked } from "marked";
@@ -22,26 +22,25 @@ export function DirView({ path }: { path: string }) {
     // FIXME: this will fail if there is a matching directory
     return path.match(/^readme(\.|$)/i);
   });
+  const atRoot = path === "/";
   return (
     <>
-      {path !== "/" && (
-        <div>
-          <a href="../">Up</a>
-        </div>
+      <h3>{atRoot ? header : fullpath}</h3>
+      <Listing paths={atRoot ? paths : ["../", ...paths]} />
+      {readme && (
+        <>
+          <h6>{basename(readme)}</h6>
+          <hr />
+          <FileView path={join(path, readme)} />
+        </>
       )}
-      <Listing paths={paths} />
-      {readme && <FileView path={join(path, readme)} />}
     </>
   );
 }
 
-export function FileView({
-  path,
-}: {
-  path: string,
-}) {
+export function FileView({ path }: { path: string }) {
   const fullpath = join(root, path);
-  const filetype = Bun.file(fullpath).type
+  const filetype = Bun.file(fullpath).type;
   const fileStr = readFileSync(fullpath).toString();
   if (filetype === "text/markdown") {
     return (
@@ -52,6 +51,6 @@ export function FileView({
       />
     );
   } else {
-    return <><h5>{basename(path)}</h5><pre>{fileStr}</pre></>;
+    return <pre>{fileStr}</pre>;
   }
 }

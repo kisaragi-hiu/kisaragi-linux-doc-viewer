@@ -1,7 +1,9 @@
 import { readdirSync, lstatSync } from "node:fs";
-import { join, basename } from "node:path";
+import { join } from "node:path";
 
 export const root = "/usr/share/doc/";
+
+export const header = "System Documentation";
 
 export function getDocs(folder: string) {
   return readdirSync(folder)

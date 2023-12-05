@@ -66,12 +66,13 @@ Bun.serve({
         ) {
           return Page(
             <>
+              <h3>{fullpath}</h3>
               {path !== "/" && (
                 <div>
                   <a href="./">Up</a>
                 </div>
               )}
-              <FileView path={path} filetype={file.type} />
+              <FileView path={path} />
             </>,
           );
         }
